@@ -1,0 +1,187 @@
+==================================================================
+ EVIDENCIA 1: Health check / prueba de conectividad
+ GET /api/salud
+==================================================================
+$ curl -s -w "
+
+HTTP_STATUS: %{http_code}
+" http://localhost:3000/api/salud
+{"exito":true,"mensaje":"API del Sistema de Gestión de Incidentes operativa","fecha":"2026-07-27T21:46:30.712Z"}
+
+HTTP_STATUS: 200
+
+==================================================================
+ EVIDENCIA 2: Listar todos los incidentes (datos semilla)
+ GET /api/incidentes
+==================================================================
+$ curl -s http://localhost:3000/api/incidentes | python3 -m json.tool
+{
+    "exito": true,
+    "total": 2,
+    "datos": [
+        {
+            "id": 1,
+            "titulo": "No enciende monitor de laboratorio",
+            "descripcion": "El monitor del laboratorio C3 no enciende tras el corte el\u00e9ctrico",
+            "categoria": "hardware",
+            "prioridad": "alta",
+            "estado": "abierto",
+            "solicitante": "Laura Zambrano",
+            "asignado_a": "Soporte TI",
+            "fecha_creacion": "2026-07-27T21:43:10.400Z",
+            "fecha_actualizacion": "2026-07-27T21:43:10.400Z"
+        },
+        {
+            "id": 2,
+            "titulo": "Acceso denegado al sistema acad\u00e9mico",
+            "descripcion": "El usuario no puede iniciar sesi\u00f3n en el portal acad\u00e9mico",
+            "categoria": "software",
+            "prioridad": "media",
+            "estado": "en_progreso",
+            "solicitante": "Carlos Mendoza",
+            "asignado_a": "Soporte TI",
+            "fecha_creacion": "2026-07-27T21:43:10.400Z",
+            "fecha_actualizacion": "2026-07-27T21:43:10.400Z"
+        }
+    ]
+}
+
+==================================================================
+ EVIDENCIA 3: Crear un nuevo incidente
+ POST /api/incidentes
+==================================================================
+$ curl -s -X POST http://localhost:3000/api/incidentes -H "Content-Type: application/json" -d '{"titulo":"Impresora del departamento no responde","descripcion":"La impresora HP del segundo piso no imprime desde ayer","categoria":"hardware","prioridad":"alta","solicitante":"Erick Mendoza"}' | python3 -m json.tool
+{
+    "exito": true,
+    "mensaje": "Incidente creado correctamente",
+    "datos": {
+        "id": 3,
+        "titulo": "Impresora del departamento no responde",
+        "descripcion": "La impresora HP del segundo piso no imprime desde ayer",
+        "categoria": "hardware",
+        "prioridad": "alta",
+        "estado": "abierto",
+        "solicitante": "Erick Mendoza",
+        "asignado_a": null,
+        "fecha_creacion": "2026-07-27T21:46:30.786Z",
+        "fecha_actualizacion": "2026-07-27T21:46:30.786Z"
+    }
+}
+
+ID asignado al nuevo incidente: 3
+
+==================================================================
+ EVIDENCIA 4: Obtener el incidente creado por id
+ GET /api/incidentes/3
+==================================================================
+$ curl -s http://localhost:3000/api/incidentes/3 | python3 -m json.tool
+{
+    "exito": true,
+    "datos": {
+        "id": 3,
+        "titulo": "Impresora del departamento no responde",
+        "descripcion": "La impresora HP del segundo piso no imprime desde ayer",
+        "categoria": "hardware",
+        "prioridad": "alta",
+        "estado": "abierto",
+        "solicitante": "Erick Mendoza",
+        "asignado_a": null,
+        "fecha_creacion": "2026-07-27T21:46:30.786Z",
+        "fecha_actualizacion": "2026-07-27T21:46:30.786Z"
+    }
+}
+
+==================================================================
+ EVIDENCIA 5: Actualizar el incidente (cambiar estado y asignado)
+ PUT /api/incidentes/3
+==================================================================
+$ curl -s -X PUT http://localhost:3000/api/incidentes/3 -H "Content-Type: application/json" -d '{"estado":"en_progreso","asignado_a":"Soporte TI - Erick"}' | python3 -m json.tool
+{
+    "exito": true,
+    "mensaje": "Incidente actualizado correctamente",
+    "datos": {
+        "id": 3,
+        "titulo": "Impresora del departamento no responde",
+        "descripcion": "La impresora HP del segundo piso no imprime desde ayer",
+        "categoria": "hardware",
+        "prioridad": "alta",
+        "estado": "en_progreso",
+        "solicitante": "Erick Mendoza",
+        "asignado_a": "Soporte TI - Erick",
+        "fecha_creacion": "2026-07-27T21:46:30.786Z",
+        "fecha_actualizacion": "2026-07-27T21:46:30.896Z"
+    }
+}
+
+==================================================================
+ EVIDENCIA 6: Filtrar incidentes por estado
+ GET /api/incidentes?estado=en_progreso
+==================================================================
+$ curl -s "http://localhost:3000/api/incidentes?estado=en_progreso" | python3 -m json.tool
+{
+    "exito": true,
+    "total": 2,
+    "datos": [
+        {
+            "id": 3,
+            "titulo": "Impresora del departamento no responde",
+            "descripcion": "La impresora HP del segundo piso no imprime desde ayer",
+            "categoria": "hardware",
+            "prioridad": "alta",
+            "estado": "en_progreso",
+            "solicitante": "Erick Mendoza",
+            "asignado_a": "Soporte TI - Erick",
+            "fecha_creacion": "2026-07-27T21:46:30.786Z",
+            "fecha_actualizacion": "2026-07-27T21:46:30.896Z"
+        },
+        {
+            "id": 2,
+            "titulo": "Acceso denegado al sistema acad\u00e9mico",
+            "descripcion": "El usuario no puede iniciar sesi\u00f3n en el portal acad\u00e9mico",
+            "categoria": "software",
+            "prioridad": "media",
+            "estado": "en_progreso",
+            "solicitante": "Carlos Mendoza",
+            "asignado_a": "Soporte TI",
+            "fecha_creacion": "2026-07-27T21:43:10.400Z",
+            "fecha_actualizacion": "2026-07-27T21:43:10.400Z"
+        }
+    ]
+}
+
+==================================================================
+ EVIDENCIA 7: Validación de datos - creación sin campos obligatorios
+ POST /api/incidentes (payload inválido, se espera HTTP 400)
+==================================================================
+$ curl -s -w "
+
+HTTP_STATUS: %{http_code}
+" -X POST http://localhost:3000/api/incidentes -H "Content-Type: application/json" -d "{}"
+{"exito":false,"mensaje":"Error de validación en los datos enviados","errores":[{"campo":"titulo","mensaje":"El título es obligatorio"},{"campo":"descripcion","mensaje":"La descripción es obligatoria"},{"campo":"solicitante","mensaje":"El solicitante es obligatorio"}]}
+
+HTTP_STATUS: 400
+
+==================================================================
+ EVIDENCIA 8: Eliminar el incidente creado
+ DELETE /api/incidentes/3
+==================================================================
+$ curl -s -w "
+
+HTTP_STATUS: %{http_code}
+" -X DELETE http://localhost:3000/api/incidentes/3
+{"exito":true,"mensaje":"Incidente 3 eliminado correctamente"}
+
+HTTP_STATUS: 200
+
+==================================================================
+ EVIDENCIA 9: Confirmar eliminación (se espera HTTP 404)
+ GET /api/incidentes/3
+==================================================================
+$ curl -s -w "
+
+HTTP_STATUS: %{http_code}
+" http://localhost:3000/api/incidentes/3
+{"exito":false,"mensaje":"No existe un incidente con id 3"}
+
+HTTP_STATUS: 404
+
