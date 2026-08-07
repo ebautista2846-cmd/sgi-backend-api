@@ -11,7 +11,11 @@ const app = express();
 
 // --- Middlewares de seguridad y utilidad ---
 app.use(helmet());                    // cabeceras HTTP seguras (evita fuga de info del stack, XSS, etc.)
-app.use(cors());                      // habilita peticiones cross-origin para el frontend (Angular/React)
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));                      // habilita peticiones cross-origin para el frontend (Angular/React)
 app.use(compression());               // comprime las respuestas JSON
 app.use(express.json({ limit: '10kb' })); // body parser con límite para mitigar payloads abusivos
 app.use(morgan('dev'));               // log de peticiones en consola, útil para depuración
