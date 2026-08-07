@@ -1,4 +1,6 @@
-require('dotenv').config({ quiet: true });
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config({ quiet: true });
+}
 const app = require('./src/app');
 const pool = require('./src/config/db');
 
