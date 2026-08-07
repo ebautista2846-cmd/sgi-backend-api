@@ -7,8 +7,8 @@ const pool = require('./src/config/db');
 const PUERTO = process.env.PORT || 3000;
 
 async function iniciar() {
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'PRESENTE' : 'AUSENTE');
   try {
-    // Verifica la conexión a la base de datos antes de aceptar tráfico
     await pool.query('SELECT 1');
     console.log('Conexión a PostgreSQL establecida correctamente');
 
