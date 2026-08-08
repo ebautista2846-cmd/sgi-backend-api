@@ -1,8 +1,13 @@
-const { Pool } = require('pg');
+﻿const mongoose = require('mongoose');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-});
+mongoose.set('strictQuery', true);
 
-module.exports = pool;
+async function conectar() {
+  if (!process.env.MONGODB_URI) {
+    throw new Error('La variable de entorno MONGODB_URI no está definida');
+  }
+  await mongoose.connect(process.env.MONGODB_URI);
+  return mongoose.connection;
+}
+
+module.exports = { conectar, mongoose };

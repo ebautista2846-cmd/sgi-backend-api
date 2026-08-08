@@ -1,11 +1,20 @@
-// Middleware de manejo centralizado de errores. Express lo reconoce por
-// tener cuatro parámetros y lo invoca cuando se llama a next(err) o cuando
-// un controlador async lanza una excepción no capturada.
-function manejadorErrores(err, req, res, next) {
+﻿function manejadorErrores(err, req, res, next) {
   console.error(`[${new Date().toISOString()}] ${err.stack || err}`);
 
-  if (err.code === '23505') {
+  if (err.code === 11000) {
     return res.status(409).json({ exito: false, mensaje: 'El registro ya existe (violación de restricción única)' });
+  }
+
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({
+      exito: false,
+      mensaje: 'Error de validación en los datos enviados',
+      errores: Object.values(err.errors).map((e) => ({ campo: e.path, mensaje: e.message })),
+    });
+  }
+
+  if (err.name === 'CastError') {
+    return res.status(400).json({ exito: false, mensaje: `Id inválido: ${err.value}` });
   }
 
   res.status(err.status || 500).json({

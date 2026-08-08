@@ -1,16 +1,16 @@
-if (process.env.NODE_ENV !== 'production') {
+﻿if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config({ quiet: true });
 }
 const app = require('./src/app');
-const pool = require('./src/config/db');
+const { conectar } = require('./src/config/db');
 
 const PUERTO = process.env.PORT || 3000;
 
 async function iniciar() {
-  console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'PRESENTE' : 'AUSENTE');
+  console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'PRESENTE' : 'AUSENTE');
   try {
-    await pool.query('SELECT 1');
-    console.log('Conexión a PostgreSQL establecida correctamente');
+    await conectar();
+    console.log('Conexión a MongoDB Atlas establecida correctamente');
 
     app.listen(PUERTO, () => {
       console.log(`Servidor del SGI escuchando en http://localhost:${PUERTO}`);

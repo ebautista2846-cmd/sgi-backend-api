@@ -1,9 +1,8 @@
-{
+﻿{
   "name": "incidentes-backend",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
-  "description": "API REST del Sistema de Gestión de Incidentes (SGI) - Node.js, Express y PostgreSQL",
+  "description": "API REST del Sistema de Gestión de Incidentes (SGI) - Node.js, Express y MongoDB Atlas",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
@@ -18,7 +17,7 @@
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
     "helmet": "^8.3.0",
-    "morgan": "^1.11.0",
-    "pg": "^8.22.0"
+    "mongoose": "^8.9.5",
+    "morgan": "^1.11.0"
   }
 }

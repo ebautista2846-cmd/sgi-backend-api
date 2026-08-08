@@ -1,6 +1,6 @@
-const { body, param, query, validationResult } = require('express-validator');
+﻿const { body, param, query, validationResult } = require('express-validator');
 
-const ESTADOS = ['abierto', 'en_progreso', 'resuelto', 'cerrado'];
+const ESTADOS = ['abierto', 'en_proceso', 'resuelto', 'cerrado'];
 const PRIORIDADES = ['baja', 'media', 'alta', 'critica'];
 
 function manejarErrores(req, res, next) {
@@ -26,7 +26,7 @@ const reglasCrear = [
 ];
 
 const reglasActualizar = [
-  param('id').isInt({ min: 1 }).withMessage('El id debe ser un entero positivo'),
+  param('id').isMongoId().withMessage('El id debe ser un ObjectId de MongoDB válido'),
   body('titulo').optional().trim().isLength({ max: 150 }),
   body('prioridad').optional().isIn(PRIORIDADES).withMessage(`Prioridad inválida. Use: ${PRIORIDADES.join(', ')}`),
   body('estado').optional().isIn(ESTADOS).withMessage(`Estado inválido. Use: ${ESTADOS.join(', ')}`),
@@ -34,7 +34,7 @@ const reglasActualizar = [
 ];
 
 const reglasId = [
-  param('id').isInt({ min: 1 }).withMessage('El id debe ser un entero positivo'),
+  param('id').isMongoId().withMessage('El id debe ser un ObjectId de MongoDB válido'),
   manejarErrores,
 ];
 
@@ -44,4 +44,4 @@ const reglasFiltros = [
   manejarErrores,
 ];
 
-module.exports = { reglasCrear, reglasActualizar, reglasId, reglasFiltros };
+module.exports = { reglasCrear, reglasActualizar, reglasId, reglasFiltros, ESTADOS, PRIORIDADES };
